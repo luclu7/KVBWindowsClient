@@ -23,7 +23,7 @@ RailDriver::RailDriver() {
 
 	std::string dllPath = value + std::string("\\steamapps\\common\\RailWorks\\plugins\\RailDriver64.dll");
     
-    std::cout << "dllPath: " << dllPath << std::endl;
+    std::cout << "Using " << dllPath << "." << std::endl;
 
 	// check if the dll exists    
     if (0xffffffff == GetFileAttributesA(dllPath.c_str()))
