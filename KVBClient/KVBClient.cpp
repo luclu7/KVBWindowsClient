@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 		port = argv[1];
 	}
 
-	std::cout << "Using serial port " << argv[1] << std::endl;
+	std::cout << "Using serial port " << port << std::endl;
 
     KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
 	RailDriverClass::RailDriver rd;
