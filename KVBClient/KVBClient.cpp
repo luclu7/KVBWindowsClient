@@ -5,6 +5,8 @@
 #include "RailDriver.h"
 #include "KVBProtocol.h"
 
+#include "resource.h"
+
 int main(int argc, char** argv)
 {
     std::cout << "KVB Windows Client v1.0 !" << std::endl;
