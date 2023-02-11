@@ -9,7 +9,7 @@
 
 int main(int argc, char** argv)
 {
-    std::cout << "KVB Windows Client v1.0 !" << std::endl;
+    std::cout << "KVB Windows Client v1.0" << std::endl;
 
 	std::string port = "COM2";
 
@@ -20,9 +20,41 @@ int main(int argc, char** argv)
 	std::cout << "Using serial port " << port << std::endl;
 
     KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
+	serialConnection.open();
+	
 	RailDriverClass::RailDriver rd;
 
-	serialConnection.open();
+
+	if (argc > 2)
+	{
+		std::string command = argv[2];
+		if (command == "/clear") {
+			// on remplis le tableau des valeurs initialement, sans les comparer
+			std::cout << "Clearing all lamps..." << std::endl;
+			for (int i = 1; i <= 8; i++) {
+				serialConnection.writeData(i, 0);
+			}
+			std::cout << "Done." << std::endl;
+			return EXIT_SUCCESS;
+		}
+		else if (command == "/set") {
+			std::cout << "Setting all lamps..." << std::endl;
+			for (int i = 1; i <= 8; i++) {
+				serialConnection.writeData(i, 1);
+			}
+			std::cout << "Done." << std::endl;
+			return EXIT_SUCCESS;
+		}
+		else if (command == "/h" || command == "/help" || command == "/?") {
+			std::cout << "Usage: " << argv[0] << " <serial port> [/clear] [/set] [/h /help /?]" << std::endl;
+			std::cout << "The clear command shuts all the lamps down, the set command turns them all on." << std::endl;
+			return 0;
+		}
+		else {
+			std::cout << "Unknown command: " << command << std::endl;
+		}
+	}
+
 
 	rd.SetRailDriverConnected(true);
 
