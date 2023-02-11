@@ -7,14 +7,15 @@
 
 int main(int argc, char** argv)
 {
-    std::cout << "Hello World! " << argc << std::endl;
+    std::cout << "KVB Windows Client v1.0 !" << std::endl;
 
 	std::string port = "COM2";
 
 	if (argc > 1) {
-		std::cout << "Using serial port " << argv[1] << std::endl;
 		port = argv[1];
 	}
+
+	std::cout << "Using serial port " << argv[1] << std::endl;
 
     KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
 	RailDriverClass::RailDriver rd;
