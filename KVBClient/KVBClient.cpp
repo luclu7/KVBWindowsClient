@@ -9,7 +9,7 @@
 
 int main(int argc, char** argv)
 {
-    std::cout << "KVB Windows Client v1.0" << std::endl;
+    std::cout << "KVB Windows Client v1.0 (built " << __DATE__  << " at " << __TIME__ << ")" << std::endl;
 
 	std::string port = "COM2";
 
