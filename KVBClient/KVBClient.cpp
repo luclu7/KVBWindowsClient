@@ -195,6 +195,6 @@ int main(int argc, char** argv)
 		
 		// temporisation minimum entre les cycles
 		// à supprimer?
-		Sleep(50);
+		Sleep(20);
 	}
 }
