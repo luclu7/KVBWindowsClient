@@ -82,13 +82,13 @@ bool SerialConnection::writeData(uint8_t varName, uint8_t varValue)
         return false;
     }
     
-	std::cout << "Sent: " << (unsigned int) buffer[0] << " " << (unsigned int) buffer[1] << " " << (unsigned int) buffer[2] << " " << (unsigned int) buffer[3] << std::endl;
+	std::cout << "Sent: " << (unsigned int) buffer[0] << " " << (unsigned int) buffer[1] << " " << (unsigned int) buffer[2] << " " << (unsigned int) buffer[3] << " ";
 
     if (!checkAck()) {
-        std::cerr << "Wrong checksum" << std::endl;
+        std::cerr << "- Wrong checksum" << std::endl;
         return false;
     }
-	std::cout << "Checksum OK" << std::endl;
+	std::cout << "- Checksum OK" << std::endl;
 
     return true;
 }
