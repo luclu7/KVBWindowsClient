@@ -1,6 +1,8 @@
 #include "RailDriver.h"
 #include <iostream>
 
+#include <winreg.h>
+
 using namespace RailDriverClass;
 
 HINSTANCE RailDriver::hinstLib = NULL;
@@ -13,7 +15,25 @@ bool(*RailDriver::GetRailSimLocoChanged_ptr)() = NULL;
 char* (*RailDriver::GetLocoName_ptr)() = NULL;
 
 RailDriver::RailDriver() {
-    hinstLib = LoadLibraryA("C:\\Program Files (x86)\\Steam\\steamapps\\common\\RailWorks\\plugins\\RailDriver64.dll");
+    constexpr auto BUFFER = 256;
+    char value[BUFFER]{};
+    DWORD BufferSize = BUFFER;
+    
+	RegGetValueA(HKEY_CURRENT_USER, "SOFTWARE\\Valve\\Steam", "SteamPath", RRF_RT_ANY, NULL, (PVOID)&value, &BufferSize);
+
+	std::string dllPath = value + std::string("\\steamapps\\common\\RailWorks\\plugins\\RailDriver64.dll");
+    
+    std::cout << "dllPath: " << dllPath << std::endl;
+
+	// check if the dll exists    
+    if (0xffffffff == GetFileAttributesA(dllPath.c_str()))
+    {
+        //File not found
+		throw std::runtime_error("File not found");
+        return;
+    }
+
+    hinstLib = LoadLibraryA(dllPath.c_str());
     if (hinstLib != NULL) {
         GetControllerList_ptr = (char*(*)())GetProcAddress(hinstLib, "GetControllerList");
         GetCurrentControllerValue_ptr = (float(*)(int))GetProcAddress(hinstLib, "GetCurrentControllerValue");
