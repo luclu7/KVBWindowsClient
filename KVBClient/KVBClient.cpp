@@ -23,6 +23,10 @@ int main(int argc, char** argv)
 	serialConnection.open();
 	
 	RailDriverClass::RailDriver rd;
+	rd.SetRailDriverConnected(true);
+
+	Sleep(400);
+
 
 
 	if (argc > 2)
@@ -45,9 +49,21 @@ int main(int argc, char** argv)
 			std::cout << "Done." << std::endl;
 			return EXIT_SUCCESS;
 		}
+		else if(command == "/list") {
+			std::cout << "Printing all controls..." << std::endl;
+			
+			// we make our copy of the train's controls to display it, for debugging purposes
+			std::vector<RailDriverClass::Control> controls = rd.GetControls();
+
+			for (RailDriverClass::Control control : controls) {
+				std::cout << control.id << ": " << control.name << " (" << control.minValue << " -> " << control.maxValue << ")" << std::endl;
+			}
+			return EXIT_SUCCESS;
+		}
 		else if (command == "/h" || command == "/help" || command == "/?") {
-			std::cout << "Usage: " << argv[0] << " <serial port> [/clear] [/set] [/h /help /?]" << std::endl;
+			std::cout << "Usage: " << argv[0] << " <serial port> [/clear] [/set] [/list] [/h /help /?]" << std::endl;
 			std::cout << "The clear command shuts all the lamps down, the set command turns them all on." << std::endl;
+			std::cout << "The /list command lists all of the locomotive's controls" << std::endl;
 			return 0;
 		}
 		else {
@@ -55,22 +71,12 @@ int main(int argc, char** argv)
 		}
 	}
 
-
-	rd.SetRailDriverConnected(true);
-
 	// time for the arduino to wake up
 	Sleep(1000);
 
 	RailDriverClass::LocoName locoName = rd.GetLocoName();
 	
 	std::cout << "Locomotive " << locoName.provider << " " << locoName.product << " " << locoName.engineName << std::endl;
-
-	// we make our copy of the train's controls to display it, for debugging purposes
-	std::vector<RailDriverClass::Control> controls = rd.GetControls();
-
-	for (RailDriverClass::Control control : controls) {
-		std::cout << control.id << ": " << control.name << " (" << control.minValue << " -> " << control.maxValue << ")" << std::endl;
-	}
 
 
 	// structure temporaire pour monitorer les variables
