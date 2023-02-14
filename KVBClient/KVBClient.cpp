@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	if (argc > 1) {
 		port = argv[1];
 	} else {
-		std::cout << "Too many arguments. Usage: KVBClient.exe [port] <options>" << std::endl;
+		std::cout << "Too many arguments. Usage: " << argv[0] << " [port] <options>" << std::endl;
 		return EXIT_FAILURE;
 	}
 	
