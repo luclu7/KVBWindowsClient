@@ -65,7 +65,7 @@ namespace KVBProtocol
         bool readData(uint8_t& ack);
         Message readProtocol();
         
-        bool checkAck();
+        bool checkAck(uint8_t& ack);
         int bytesInSerialBuffer();
 
     private:

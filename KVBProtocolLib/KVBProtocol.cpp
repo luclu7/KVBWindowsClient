@@ -84,8 +84,9 @@ bool SerialConnection::writeData(uint8_t varName, uint8_t varValue)
     
 	std::cout << "Sent: " << (unsigned int) buffer[0] << " " << (unsigned int) buffer[1] << " " << (unsigned int) buffer[2] << " " << (unsigned int) buffer[3] << " ";
 
-    if (!checkAck()) {
-        std::cerr << "- Wrong checksum" << std::endl;
+    uint8_t ack;
+    if (!checkAck(ack)) {
+        std::cerr << "- Wrong checksum (" << std::hex << (unsigned int) ack << ")" << std::endl;
         return false;
     }
 	std::cout << "- Checksum OK" << std::endl;
@@ -154,10 +155,8 @@ Message SerialConnection::readProtocol()
     return {buffer[1], buffer[2]};
 }
 
-bool SerialConnection::checkAck()
+bool SerialConnection::checkAck(uint8_t& ack)
 {
-    uint8_t ack;
-
     readData(ack);
 
     return ack == 0x24;
