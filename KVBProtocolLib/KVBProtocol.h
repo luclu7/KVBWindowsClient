@@ -12,6 +12,24 @@ namespace KVBProtocol
 	constexpr int ON = 1;
 	constexpr int OFF = 0;
 
+    enum KVBPCodesReception {
+        BPVAL = 0x01,
+        BPMV = 0x02,
+        BPFC = 0x03,
+        BPTEST = 0x04,
+        BPSF = 0x05,
+
+        V1 = 0x06,
+        V2 = 0x07,
+
+        L1 = 0x08,
+
+        D1 = 0x09,
+        D2 = 0x0A,
+        D3 = 0x0B
+    };
+
+
     // code KVBP à envoyer
     enum KVBPCodes {
         SOL = 0x01,
