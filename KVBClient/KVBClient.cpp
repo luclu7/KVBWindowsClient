@@ -15,8 +15,11 @@ int main(int argc, char** argv)
 
 	if (argc > 1) {
 		port = argv[1];
+	} else {
+		std::cout << "Too many arguments. Usage: KVBClient.exe [port] <options>" << std::endl;
+		return EXIT_FAILURE;
 	}
-
+	
 	std::cout << "Using serial port " << port << std::endl;
 
     KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
@@ -61,7 +64,7 @@ int main(int argc, char** argv)
 			return EXIT_SUCCESS;
 		}
 		else if (command == "/h" || command == "/help" || command == "/?") {
-			std::cout << "Usage: " << argv[0] << " <serial port> [/clear] [/set] [/list] [/h /help /?]" << std::endl;
+			std::cout << "Usage: " << argv[0] << " [/clear] [/set] [/list] [/h /help /?] <serial port>" << std::endl;
 			std::cout << "The clear command shuts all the lamps down, the set command turns them all on." << std::endl;
 			std::cout << "The /list command lists all of the locomotive's controls" << std::endl;
 			return 0;
