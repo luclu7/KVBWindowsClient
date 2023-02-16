@@ -30,8 +30,18 @@ int main(int argc, char** argv)
 
 	Sleep(400);
 
+	// we make our copy of the train's controls to display it, for debugging purposes
+	std::vector<RailDriverClass::Control> controls = rd.GetControls();
 
+	bool isConnectedToTS = true;
 
+	std::cout << "Found " << controls.size() << " controls." << std::endl;
+
+	if (controls.size() == 1) {
+		std::cout << "No controls found. Is everything ok?" << std::endl;
+		isConnectedToTS = false;
+	}
+	
 	if (argc > 2)
 	{
 		std::string command = argv[2];
@@ -104,6 +114,8 @@ int main(int argc, char** argv)
 		{"KVB_visu_control", KVBProtocol::KVBPCodes::visu, -1}
 	};
 
+	
+	if(isConnectedToTS) {
 	// on remplis le tableau des valeurs initialement, sans les comparer
 	for (int i = 0; i < values.size(); i++) {
 		int value = (int)rd.readControllerValue(values[i].control_name);
@@ -114,6 +126,7 @@ int main(int argc, char** argv)
 	// don't forget to reset SOL/ENGIN
 	serialConnection.writeData(KVBProtocol::KVBPCodes::SOL, 0);
 	serialConnection.writeData(KVBProtocol::KVBPCodes::ENGIN, 0);
+	}
 
 	while (true) {
 
