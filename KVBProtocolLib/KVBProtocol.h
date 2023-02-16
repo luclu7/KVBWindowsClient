@@ -41,6 +41,8 @@ namespace KVBProtocol
 		FC = 0x07,
 		LSSF = 0x08,
 		visu = 0x09,
+		bipSurvitesse = 0x0B,
+		audio = 0x0A
     };
 
 	// code correspondant à la valeur à envoyer

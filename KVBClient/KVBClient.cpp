@@ -104,13 +104,15 @@ int main(int argc, char** argv)
 
 	// TODO: refactor ça
 	std::vector<ValuesMonitor> values = {
-		{"Autotest_KVB_control", 0x0A, -1},
+		{"Autotest_KVB_control", 252, -1},
+		{"CC6500_son_autotest_KVB_control", 0xFA, -1},
 
 		{"KVB_LS_V_control", KVBProtocol::KVBPCodes::V, -1},
 		{"KVB_LS_FU_control", KVBProtocol::KVBPCodes::FU, -1},
 		{"KVB_BP_VAL_lumiere_control", KVBProtocol::KVBPCodes::VAL, -1},
 		{"KVB_BP_VIO_lumiere_control", KVBProtocol::KVBPCodes::MV, -1},
 		{"KVB_BP_CAR_lumiere_control", KVBProtocol::KVBPCodes::FC, -1},
+		{"bip_V_control", KVBProtocol::KVBPCodes::bipSurvitesse, -1 },
 
 		{"KVB_LS_SF_control", KVBProtocol::KVBPCodes::LSSF, -1},
 		{"KVB_visu_control", KVBProtocol::KVBPCodes::visu, -1}
@@ -130,6 +132,9 @@ int main(int argc, char** argv)
 		serialConnection.writeData(KVBProtocol::KVBPCodes::ENGIN, 0);
 	}
 
+	int lastBip = -1;
+	int lastATbip = -1;
+	
 	while (true) {
 		using namespace KVBProtocol;
 
@@ -198,6 +203,8 @@ int main(int argc, char** argv)
 				break;
 
 			case 0x0c:
+				if (isConnectedToTS)
+					rd.writeControllerValue("KVB_potar_control", (float)msg.varValue);
 				std::cout << "Received 0x0c:";
 				switch (msg.varValue) {
 				case 0x00:
@@ -214,6 +221,10 @@ int main(int argc, char** argv)
 			}
 		}
 
+		if (!isConnectedToTS) {
+			break;
+		}
+
 		// pour gérer l'autotest, on doit le lire en premier
 		int autotest = (int)rd.readControllerValue("Autotest_KVB_control");
 		
@@ -224,6 +235,15 @@ int main(int argc, char** argv)
 
 				values[0].previousValue = 0;
 			}
+		}
+
+		int kvb_autotest_sound = (int)rd.readControllerValue("CC6500_son_autotest_KVB_control");
+		if (kvb_autotest_sound != values[1].previousValue) {
+			if (kvb_autotest_sound == 1) {
+				serialConnection.writeData(0x0A, 3);
+			}
+			std::cout << "KVB Autotest sound: " << kvb_autotest_sound << std::endl;
+			values[1].previousValue = kvb_autotest_sound;
 		}
 
 
@@ -270,10 +290,10 @@ int main(int argc, char** argv)
 			}
 
 			// LSSF blinks during the autotest, so we need to check it manually
-			int value = (int)rd.readControllerValue(values[6].control_name); // LSSF
-			if (value != values[6].previousValue) {
-				serialConnection.writeData(values[6].kvbp_code, value);
-				values[6].previousValue = value;
+			int value = (int)rd.readControllerValue(values[7].control_name); // LSSF
+			if (value != values[7].previousValue) {
+				serialConnection.writeData(values[7].kvbp_code, value);
+				values[7].previousValue = value;
 			}
 
 
@@ -298,6 +318,13 @@ int main(int argc, char** argv)
 					values[i].previousValue = value;
 				}
 			}
+		}
+
+		int bip_v = (int)rd.readControllerValue("bip_V_control");
+		if (bip_v != lastBip) {
+			std::cout << "bip_V_control: " << bip_v << std::endl;
+			serialConnection.writeData(0x0B, bip_v);
+			lastBip = bip_v;
 		}
 		
 		// temporisation minimum entre les cycles
