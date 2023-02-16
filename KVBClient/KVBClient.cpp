@@ -7,6 +7,10 @@
 
 #include "resource.h"
 
+
+int roll_over_to_number(int targetValue, int control, RailDriverClass::RailDriver* rd);
+void press_button(int btnId, RailDriverClass::RailDriver* rd);
+
 int main(int argc, char** argv)
 {
     std::cout << "KVB Windows Client v1.0 (built " << __DATE__  << " at " << __TIME__ << ")" << std::endl;
@@ -131,7 +135,8 @@ int main(int argc, char** argv)
 	while (true) {
 		using namespace KVBProtocol;
 
-		KVBProtocol::Message msg = serialConnection.readProtocol();
+		int result = -1;
+		
 		Message msg = serialConnection.readProtocol();
 		if (msg.varName != 0) {
 			//std::cout << "Received value " << msg.varName << ": " << msg.varValue << std::endl;
@@ -163,6 +168,36 @@ int main(int argc, char** argv)
 				std::cout << "BP SF: " << rd.readControllerValue("KVB_BP_SF_control") << std::endl;
 				break;
 
+			case KVBPCodesReception::V1:
+				if (isConnectedToTS)
+					result = roll_over_to_number(msg.varValue, rd.getControllerID("KVB_V_cent_control"), &rd);
+				std::cout << "V1: " << (result == -1 ? msg.varValue : result) << std::endl;
+
+				break;
+			
+			case KVBPCodesReception::V2:
+				if (isConnectedToTS)
+					result = roll_over_to_number(msg.varValue, rd.getControllerID("KVB_V_diz_control"), &rd);
+				std::cout << "V2: " << (result == -1 ? msg.varValue : result) << std::endl;
+				break;
+			
+			case KVBPCodesReception::L1:
+				if (isConnectedToTS)
+					result = roll_over_to_number(msg.varValue, rd.getControllerID("KVB_L_control"), &rd);
+				std::cout << "L1: " << (result == -1 ? msg.varValue : result) << std::endl;
+				break;
+				
+			case KVBPCodesReception::D2:
+				if (isConnectedToTS)
+					result = roll_over_to_number(msg.varValue, rd.getControllerID("KVB_D_diz_control"), &rd);
+				std::cout << "D2: " << (result == -1 ? msg.varValue : result) << std::endl;
+				break;
+			
+			case KVBPCodesReception::D3:
+				if (isConnectedToTS)
+					result = roll_over_to_number(msg.varValue, rd.getControllerID("KVB_D_unit_control"), &rd);
+				std::cout << "D3: " << (result == -1 ? msg.varValue : result) << std::endl;
+				break;
 			}
 		}
 
@@ -256,4 +291,59 @@ int main(int argc, char** argv)
 		// à supprimer?
 		Sleep(20);
 	}
+}
+
+
+int roll_over_to_number(int targetValue, int control, RailDriverClass::RailDriver* rd)
+{
+	int minusButton = control - 2;
+	int plusButton = control - 1;
+
+	if (targetValue < 0 || targetValue > 9) return -1;  // targetValue is not a valid number (0-9)
+
+	int A = int(float(rd->GetCurrentControllerValue(control)));  // Read the current state of A
+
+	if (A == targetValue) {
+		return A;  // A is already equal to targetValue, no need to do anything
+	}
+
+	if (A == 0 && targetValue == 9) {
+		press_button(minusButton, rd);
+		A = int(float(rd->GetCurrentControllerValue(control)));  // Read the current state of A
+		return A;
+	}
+	else if (A == 9 && targetValue == 0) {
+		press_button(plusButton, rd);
+		A = int(float(rd->GetCurrentControllerValue(control)));  // Read the current state of A
+		return A;
+	}
+
+	int difference = targetValue - A;
+
+	if (difference > 0) {
+		// Press the plus button
+		for (int i = 0; i < difference; i++) {
+			press_button(plusButton, rd);
+			A = int(float(rd->GetCurrentControllerValue(control)));  // Read the current state of A
+		}
+	}
+	else {
+		// Press the minus button
+		for (int i = 0; i < -difference; i++) {
+			press_button(minusButton, rd);
+			A = int(float(rd->GetCurrentControllerValue(control)));  // Read the current state of A
+		}
+}
+
+	return A;
+}
+
+void press_button(int btnId, RailDriverClass::RailDriver* rd)
+{
+	DWORD sleepTime = 50;
+
+	rd->SetControllerValue(btnId, 1.0f);
+	Sleep(sleepTime);
+	rd->SetControllerValue(btnId, 0.0f);
+	Sleep(sleepTime);
 }
