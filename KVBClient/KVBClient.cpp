@@ -13,7 +13,7 @@ void press_button(int btnId, RailDriverClass::RailDriver* rd);
 
 int main(int argc, char** argv)
 {
-    std::cout << "KVB Windows Client v1.0 (built " << __DATE__  << " at " << __TIME__ << ")" << std::endl;
+	std::cout << "KVB Windows Client v1.0 (built " << __DATE__  << " at " << __TIME__ << ")" << std::endl;
 
 	std::string port = "COM2";
 
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	
 	std::cout << "Using serial port " << port << std::endl;
 
-    KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
+	KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
 	serialConnection.open();
 	
 	RailDriverClass::RailDriver rd;
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	std::vector<RailDriverClass::Control> controls = rd.GetControls();
 
 	bool isConnectedToTS = true;
-
+	
 	std::cout << "Found " << controls.size() << " controls." << std::endl;
 
 	if (controls.size() == 1) {
@@ -69,8 +69,6 @@ int main(int argc, char** argv)
 		else if(command == "/list") {
 			std::cout << "Printing all controls..." << std::endl;
 			
-			// we make our copy of the train's controls to display it, for debugging purposes
-			std::vector<RailDriverClass::Control> controls = rd.GetControls();
 
 			for (RailDriverClass::Control control : controls) {
 				std::cout << control.id << ": " << control.name << " (" << control.minValue << " -> " << control.maxValue << ")" << std::endl;
@@ -120,16 +118,16 @@ int main(int argc, char** argv)
 
 	
 	if(isConnectedToTS) {
-	// on remplis le tableau des valeurs initialement, sans les comparer
-	for (int i = 0; i < values.size(); i++) {
-		int value = (int)rd.readControllerValue(values[i].control_name);
-		serialConnection.writeData(values[i].kvbp_code, value);
-		values[i].previousValue = value;
-	}
+		// on remplis le tableau des valeurs initialement, sans les comparer
+		for (int i = 0; i < values.size(); i++) {
+			int value = (int)rd.readControllerValue(values[i].control_name);
+			serialConnection.writeData(values[i].kvbp_code, value);
+			values[i].previousValue = value;
+		}
 
-	// don't forget to reset SOL/ENGIN
-	serialConnection.writeData(KVBProtocol::KVBPCodes::SOL, 0);
-	serialConnection.writeData(KVBProtocol::KVBPCodes::ENGIN, 0);
+		// don't forget to reset SOL/ENGIN
+		serialConnection.writeData(KVBProtocol::KVBPCodes::SOL, 0);
+		serialConnection.writeData(KVBProtocol::KVBPCodes::ENGIN, 0);
 	}
 
 	while (true) {
@@ -197,6 +195,21 @@ int main(int argc, char** argv)
 				if (isConnectedToTS)
 					result = roll_over_to_number(msg.varValue, rd.getControllerID("KVB_D_unit_control"), &rd);
 				std::cout << "D3: " << (result == -1 ? msg.varValue : result) << std::endl;
+				break;
+
+			case 0x0c:
+				std::cout << "Received 0x0c:";
+				switch (msg.varValue) {
+				case 0x00:
+					std::cout << "  - 0x00: VO" << std::endl;
+					break;
+				case 0x01:
+					std::cout << "  - 0x01: ME" << std::endl;
+					break;
+				case 0x02:
+					std::cout << "  - 0x02: MA" << std::endl;
+					break;
+				}
 				break;
 			}
 		}
@@ -333,7 +346,7 @@ int roll_over_to_number(int targetValue, int control, RailDriverClass::RailDrive
 			press_button(minusButton, rd);
 			A = int(float(rd->GetCurrentControllerValue(control)));  // Read the current state of A
 		}
-}
+	}
 
 	return A;
 }
