@@ -129,34 +129,36 @@ int main(int argc, char** argv)
 	}
 
 	while (true) {
+		using namespace KVBProtocol;
 
 		KVBProtocol::Message msg = serialConnection.readProtocol();
+		Message msg = serialConnection.readProtocol();
 		if (msg.varName != 0) {
 			//std::cout << "Received value " << msg.varName << ": " << msg.varValue << std::endl;
 
 			switch (msg.varName) {
-			case 0x01: // BP-VAL
+			case KVBPCodesReception::BPVAL: // BP-VAL
 				rd.writeControllerValue("KVB_BP_VAL_off_control", (float)msg.varValue);
 				std::cout << "BP VAL: " << rd.readControllerValue("KVB_BP_VAL_off_control") << std::endl;
 				break;
 
-			case 0x02: // BP-MV
+			case KVBPCodesReception::BPMV: // BP-MV
 				rd.writeControllerValue("KVB_BP_VIO_off_control", (float)msg.varValue);
 				std::cout << "BP MV: " << rd.readControllerValue("KVB_BP_VIO_off_control") << std::endl;
 				break;
 
-			case 0x03: // BP-FC
+			case KVBPCodesReception::BPFC: // BP-FC
 				rd.writeControllerValue("KVB_BP_CAR_off_control", (float)msg.varValue);
 				std::cout << "BP FC: " << rd.readControllerValue("KVB_BP_CAR_off_control") << std::endl;
 				break;
 
-			case 0x04: // BP-TEST
+			case KVBPCodesReception::BPTEST: // BP-TEST
 				rd.writeControllerValue("KVB_BP_test_control", (float)msg.varValue);
 				std::cout << "BP TEST: " << rd.readControllerValue("KVB_BP_test_control") << std::endl;
 				break;
 
 
-			case 0x05: // BP-SF
+			case KVBPCodesReception::BPSF: // BP-SF
 				rd.writeControllerValue("KVB_BP_SF_control", (float)msg.varValue);
 				std::cout << "BP SF: " << rd.readControllerValue("KVB_BP_SF_control") << std::endl;
 				break;
