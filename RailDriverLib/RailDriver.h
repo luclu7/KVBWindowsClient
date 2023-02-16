@@ -41,6 +41,7 @@ namespace RailDriverClass {
 
         float readControllerValue(std::string controlName);
         int writeControllerValue(std::string controlName, float value);
+        int getControllerID(std::string controlName);
                 
     private:
         static HINSTANCE hinstLib;
@@ -56,7 +57,6 @@ namespace RailDriverClass {
 		static char*(*GetLocoName_ptr)();
 		std::vector<Value> getValues();
 
-        int getControllerID(std::string controlName);
 
 
         static char* GetControllerList();
