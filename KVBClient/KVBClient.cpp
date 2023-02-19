@@ -66,6 +66,7 @@ int main(int argc, char** argv)
 			std::cout << "Done." << std::endl;
 			return EXIT_SUCCESS;
 		}
+		else if (command == "/requestTW") {
 		else if(command == "/list") {
 			std::cout << "Printing all controls..." << std::endl;
 			
@@ -121,7 +122,7 @@ int main(int argc, char** argv)
 	
 	if(isConnectedToTS) {
 		// on remplis le tableau des valeurs initialement, sans les comparer
-		for (int i = 0; i < values.size(); i++) {
+		for (int i = 2; i < values.size(); i++) {
 			int value = (int)rd.readControllerValue(values[i].control_name);
 			serialConnection.writeData(values[i].kvbp_code, value);
 			values[i].previousValue = value;
@@ -311,7 +312,7 @@ int main(int argc, char** argv)
 				values[0].previousValue = autotest;
 			}
 
-			for (int i = 1; i < values.size(); i++) {
+			for (int i = 2; i < values.size(); i++) {
 				int value = (int)rd.readControllerValue(values[i].control_name);
 				if (value != values[i].previousValue) {
 					serialConnection.writeData(values[i].kvbp_code, value);
