@@ -4,6 +4,7 @@
 #include <iostream>
 #include "RailDriver.h"
 #include "KVBProtocol.h"
+#include "configFile.hpp"
 
 #include "resource.h"
 
@@ -34,14 +35,16 @@ int main(int argc, char** argv)
 
 	Sleep(400);
 
-	// we make our copy of the train's controls to display it, for debugging purposes
-	std::vector<RailDriverClass::Control> controls = rd.GetControls();
+	// we make our copy of the train's controls to check if TrainSim works
+	std::vector<RailDriverClass::Control> TScontrols = rd.GetControls();	
+	std::vector<RailDriverClass::Control> controls = readConfigFile("6500_ctrls.ini");
 
 	bool isConnectedToTS = true;
 	
-	std::cout << "Found " << controls.size() << " controls." << std::endl;
+	std::cout << "Found " << controls.size() << " controls in config file." << std::endl;
+	std::cout << "Found " << TScontrols.size() << " controls in TrainSim." << std::endl;
 
-	if (controls.size() == 1) {
+	if (TScontrols.size() == 1) {
 		std::cout << "No controls found. Is everything ok?" << std::endl;
 		isConnectedToTS = false;
 	}
