@@ -149,7 +149,7 @@ int main(int argc, char** argv)
 		serialConnection.writeData(KVBProtocol::KVBPCodes::ENGIN, 0);
 	}
 
-	int lastBip = -1;
+	int lastBip = 0;
 	int lastATbip = -1;
 	
 	while (true) {
@@ -338,7 +338,7 @@ int main(int argc, char** argv)
 		}
 
 		int bip_v = (int)rd.readControllerValue("bip_V_control");
-		if (bip_v != lastBip) {
+		if (bip_v != lastBip && bip_v != -50) {
 			std::cout << "bip_V_control: " << bip_v << std::endl;
 			serialConnection.writeData(0x0B, bip_v);
 			lastBip = bip_v;
