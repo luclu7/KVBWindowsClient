@@ -70,6 +70,19 @@ int main(int argc, char** argv)
 			return EXIT_SUCCESS;
 		}
 		else if (command == "/requestTW") {
+			std::cout << "Requesting TW..." << std::endl;
+			serialConnection.writeData(0x0B, 0);
+
+			while (serialConnection.bytesInSerialBuffer() == 0) {
+				Sleep(100);
+			}
+			
+			for (int i = 0; i < serialConnection.bytesInSerialBuffer()/4; i++) {
+				KVBProtocol::Message msg = serialConnection.readProtocol();
+				std::cout << "Received TW: " << msg.varName << std::endl;
+			}
+			
+		}
 		else if(command == "/list") {
 			std::cout << "Printing all controls..." << std::endl;
 			
