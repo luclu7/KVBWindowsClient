@@ -130,7 +130,23 @@ Message SerialConnection::readProtocol()
         return {};
     }
 
-    if (!ReadFile(m_handle, buffer, bufferSize, &bytesRead, NULL))
+    // read the first byte to check if it is the header
+    if (!ReadFile(m_handle, buffer, 1, &bytesRead, NULL))
+    {
+		std::cerr << "Failed to read protocol from serial port: " << m_portName << std::endl;
+		CloseHandle(m_handle);
+		m_handle = INVALID_HANDLE_VALUE;
+		return {};
+	}
+
+    if (buffer[0] != header)
+    {
+		//std::cerr << "Wrong header" << std::endl;
+		return {};
+	}
+
+    // read the rest of the protocol
+    if (!ReadFile(m_handle, buffer + 1, bufferSize - 1, &bytesRead, NULL))
     {
         std::cerr << "Failed to read protocol from serial port: " << m_portName << std::endl;
         CloseHandle(m_handle);
