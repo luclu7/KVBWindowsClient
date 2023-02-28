@@ -86,7 +86,7 @@ bool SerialConnection::writeData(uint8_t varName, uint8_t varValue)
 
     uint8_t ack;
     if (!checkAck(ack)) {
-        std::cerr << "- Wrong checksum (" << std::hex << (unsigned int) ack << ")" << std::endl;
+        std::cerr << "- Wrong checksum (0x" << std::hex << (unsigned int) ack << ")" << std::endl;
         return false;
     }
 	std::cout << "- Checksum OK" << std::endl;
