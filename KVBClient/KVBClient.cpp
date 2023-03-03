@@ -24,13 +24,17 @@ int main(int argc, char** argv)
 	
 	std::cout << "Using serial port " << port << std::endl;
 
+	// UART connection initialization
 	KVBProtocol::SerialConnection serialConnection(port.c_str(), 9600);
 	serialConnection.open();
 	
+	// train simulator connection initialization
 	RailDriverClass::RailDriver rd;
 	rd.SetRailDriverConnected(true);
 
+	// we wait for TS/Arduino to be ready
 	Sleep(400);
+
 
 	// we make our copy of the train's controls to check if TrainSim works
 	std::vector<RailDriverClass::Control> TScontrols = rd.GetControls();	
@@ -90,7 +94,7 @@ int main(int argc, char** argv)
 			return EXIT_SUCCESS;
 		}
 		else if (command == "/h" || command == "/help" || command == "/?") {
-			std::cout << "Usage: " << argv[0] << " [/clear] [/set] [/list] [/h /help /?] <serial port>" << std::endl;
+			std::cout << "Usage: " << argv[0] << " [/clear] [/set] [/list] [/h /help /?]" << std::endl;
 			std::cout << "The clear command shuts all the lamps down, the set command turns them all on." << std::endl;
 			std::cout << "The /list command lists all of the locomotive's controls" << std::endl;
 			return 0;
