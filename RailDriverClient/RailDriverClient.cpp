@@ -16,11 +16,13 @@ int main()
 {
 	RailDriverClass::RailDriver rd;
 
+	rd.setControlsFile("6500_ctrls.ini");
+
 	rd.SetRailDriverConnected(true);
 
 	Sleep(1000);
 	
-	std::vector<RailDriverClass::Control> controls = readConfigFile("6500_aigu.ini");
+	std::vector<RailDriverClass::Control> controls = readConfigFile("6500_ctrls.ini");
 
 	// create a map consisting of the control id and the last control value
 	std::map<int, float> controlValues;
