@@ -41,7 +41,7 @@ namespace RailDriverClass {
 		std::vector<Control> GetControls();
         bool didValuesChange();
 
-        void setControlsFile(std::string fileName);
+        std::vector<Control> setControlsFile(std::string fileName);
 
         float readControllerValue(std::string controlName);
         int writeControllerValue(std::string controlName, float value);

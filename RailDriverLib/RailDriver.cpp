@@ -214,7 +214,7 @@ bool RailDriverClass::RailDriver::didValuesChange()
 	return changed;
 }
 
-void RailDriverClass::RailDriver::setControlsFile(std::string fileName)
+std::vector<Control> RailDriverClass::RailDriver::setControlsFile(std::string fileName)
 {
     std::vector<RailDriverClass::Control> newControls;
 
@@ -243,4 +243,6 @@ void RailDriverClass::RailDriver::setControlsFile(std::string fileName)
     }
 
     controls = newControls;
+
+    return newControls;
 }
