@@ -148,10 +148,10 @@ Message SerialConnection::readProtocol()
     // read the rest of the protocol
     if (!ReadFile(m_handle, buffer + 1, bufferSize - 1, &bytesRead, NULL))
     {
-        std::cerr << "Failed to read protocol from serial port: " << m_portName << std::endl;
-        CloseHandle(m_handle);
-        m_handle = INVALID_HANDLE_VALUE;
-        return {};
+		std::cerr << "Failed to read protocol from serial port: " << m_portName << std::endl;
+		CloseHandle(m_handle);
+		m_handle = INVALID_HANDLE_VALUE;
+		return {};
     }
 
 	std::cout << "Header: 0x" << std::hex << (int)buffer[0] << " VarName: 0x" << std::hex << (int)buffer[1] << " VarValue: 0x" << std::hex << (int)buffer[2] << " Checksum: 0x" << std::hex << (int)buffer[3] << std::endl;
