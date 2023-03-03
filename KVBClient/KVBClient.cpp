@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 
 	// we make our copy of the train's controls to check if TrainSim works
 	std::vector<RailDriverClass::Control> TScontrols = rd.GetControls();	
-	std::vector<RailDriverClass::Control> controls = readConfigFile("6500_ctrls.ini");
+	std::vector<RailDriverClass::Control> controls = rd.setControlsFile(settings.controlsConfigFile);
 
 	bool isConnectedToTS = true;
 	
