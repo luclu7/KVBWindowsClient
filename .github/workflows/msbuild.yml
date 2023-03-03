@@ -48,4 +48,25 @@ jobs:
       uses: actions/upload-artifact@v3.1.2
       with:
         path: x64/Release
-      
+
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: ${{ github.head_ref }}-${{ github.sha }}
+        tag_name: ${{ github.ref }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        
+    - name: upload windows artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: x64/Release/KVBClient.exe
+        asset_name: KVBClient.exe
+        asset_content_type: application/vnd.microsoft.portable-executable
+
