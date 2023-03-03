@@ -16,14 +16,11 @@ int main(int argc, char** argv)
 {
 	std::cout << "KVB Windows Client v1.0 (built " << __DATE__  << " at " << __TIME__ << ")" << std::endl;
 
-	std::string port = "COM2";
 
-	if (argc > 1) {
-		port = argv[1];
-	} else {
-		std::cout << "Too many arguments. Usage: " << argv[0] << " [port] <options>" << std::endl;
-		return EXIT_FAILURE;
-	}
+	// read settings from file
+	Settings settings = readSettingsFile(".\\config.ini");
+	
+	std::string port = settings.serialPort;
 	
 	std::cout << "Using serial port " << port << std::endl;
 

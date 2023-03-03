@@ -5,4 +5,9 @@
 #include <fstream>
 #include "RailDriver.h"
 
-std::vector<RailDriverClass::Control> readConfigFile(const std::string& filename);
+struct Settings {
+	std::string serialPort;
+	std::string controlsConfigFile;
+};
+
+Settings readSettingsFile(const std::string& filename);
