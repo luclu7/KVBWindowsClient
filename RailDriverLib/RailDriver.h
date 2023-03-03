@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <string>
 
 namespace RailDriverClass {
     struct Control {
@@ -38,6 +40,8 @@ namespace RailDriverClass {
         //static bool GetRailSimLocoChanged();
 		std::vector<Control> GetControls();
         bool didValuesChange();
+
+        void setControlsFile(std::string fileName);
 
         float readControllerValue(std::string controlName);
         int writeControllerValue(std::string controlName, float value);

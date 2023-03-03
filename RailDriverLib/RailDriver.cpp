@@ -213,3 +213,34 @@ bool RailDriverClass::RailDriver::didValuesChange()
 
 	return changed;
 }
+
+void RailDriverClass::RailDriver::setControlsFile(std::string fileName)
+{
+    std::vector<RailDriverClass::Control> newControls;
+
+    std::ifstream file(fileName);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file " << fileName << std::endl;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        auto pos = line.find('=');
+        if (pos != std::string::npos) {
+            auto controlId = line.substr(0, pos);
+            auto controlName = line.substr(pos + 1);
+
+            // remove space
+            controlName.erase(std::remove(controlName.begin(), controlName.end(), ' '), controlName.end());
+
+            std::cout << "Control " << controlId << " = " << controlName << std::endl;
+
+            RailDriverClass::Control control;
+            control.id = std::stoi(controlId);
+            control.name = controlName;
+            newControls.push_back(control);
+        }
+    }
+
+    controls = newControls;
+}
